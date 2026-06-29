@@ -8,7 +8,7 @@ import pandas as pd
 from groq import Groq
 
 st.set_page_config(
-    page_title="PsycheAI - Mental Health Chatbot",
+    page_title="HealAI - Mental Health Chatbot",
     page_icon="🧠",
     layout="wide"
 )
@@ -106,9 +106,19 @@ Then, on a new line, write your conversational response."""
     return clean_response, final_emoji, final_label
 
 # ── Session state ──
-if 'chat_history'  not in st.session_state: st.session_state.chat_history  = []
-if 'mood_history'  not in st.session_state: st.session_state.mood_history  = []
-if 'active_tab'    not in st.session_state: st.session_state.active_tab    = 'chat'
+import uuid
+
+if 'session_id' not in st.session_state:
+    st.session_state.session_id  = str(uuid.uuid4())
+    st.session_state.chat_history = []
+    st.session_state.mood_history = []
+    st.session_state.active_tab  = 'chat'
+    st.session_state.input_value = ''
+
+if 'chat_history' not in st.session_state: st.session_state.chat_history = []
+if 'mood_history' not in st.session_state: st.session_state.mood_history = []
+if 'active_tab'   not in st.session_state: st.session_state.active_tab   = 'chat'
+if 'input_value'  not in st.session_state: st.session_state.input_value  = ''
 
 # ── Dark mode & Alignment CSS ──
 st.markdown("""
@@ -233,7 +243,7 @@ with st.sidebar:
             <div style="width:36px;height:36px;background:#7c3aed;border-radius:10px;
                         display:flex;align-items:center;justify-content:center;font-size:1.1rem">🧠</div>
             <div>
-                <div style="color:#f1f1f1;font-weight:700;font-size:1rem">PsycheAI</div>
+                <div style="color:#f1f1f1;font-weight:700;font-size:1rem">HealAI</div>
                 <div style="color:#555;font-size:0.7rem">Mental Health Chatbot</div>
             </div>
         </div>
@@ -264,7 +274,7 @@ if st.session_state.active_tab == 'chat':
     st.markdown("""
     <div class="chat-header">
         <div style="color:#f1f1f1;font-weight:600;font-size:1.1rem">
-            Hello, Wajahat I'm here for you 
+            Hello, I'm here for you 
         </div>
         <div style="color:#555;font-size:0.82rem;margin-top:3px">
             How are you feeling today?
@@ -280,9 +290,9 @@ if st.session_state.active_tab == 'chat':
                         font-size:0.95rem;flex-shrink:0">🧠</div>
             <div style="flex-grow: 1; max-width: 100%;">
                 <div class="bot-msg" style="display:block; max-width:75%;">
-                    Hi Wajahat! I'm PsycheAI, your personal mental health companion. 
-                    I'm here to listen without judgment and support you through
-                    whatever you're feeling.<br><br>How are you feeling today?
+                    Welcome to HealAI.
+                    I am your AI assistant, dedicated to providing a safe, non-judgmental space for your thoughts.
+                    How are you feeling today?
                 </div>
                 <div class="msg-time">Just now</div>
             </div>
@@ -338,7 +348,7 @@ if st.session_state.active_tab == 'chat':
             'role': 'user', 'content': user_text, 'time': now
         })
 
-        with st.spinner("PsycheAI is typing..."):
+        with st.spinner("HealAI is typing..."):
             try:
                 emotion, confidence = predict_emotion(user_text)
                 groq_history = [
