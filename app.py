@@ -26,7 +26,7 @@ def load_model():
 
 model, vectorizer = load_model()
 
-GROQ_API_KEY = "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"
+GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 client = Groq(api_key=GROQ_API_KEY)
 
 def clean_text(text):
